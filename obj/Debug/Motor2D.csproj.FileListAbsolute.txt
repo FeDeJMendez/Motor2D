@@ -1,0 +1,10 @@
+C:\Users\Fede\Desktop\Motor2D\Motor2D\bin\Debug\Motor2D.exe.config
+C:\Users\Fede\Desktop\Motor2D\Motor2D\bin\Debug\Motor2D.exe
+C:\Users\Fede\Desktop\Motor2D\Motor2D\bin\Debug\Motor2D.pdb
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.csprojAssemblyReference.cache
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.Form1.resources
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.Properties.Resources.resources
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.csproj.GenerateResource.cache
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.csproj.CoreCompileInputs.cache
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.exe
+C:\Users\Fede\Desktop\Motor2D\Motor2D\obj\Debug\Motor2D.pdb
