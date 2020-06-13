@@ -63,8 +63,8 @@ namespace Motor2D
         public int Animaciones { get { return animaciones; } }
         public int AnimacionActual { get { return animacionActual; } set { animacionActual = value; } }
 
-        public int Activo { get { return activo; } set { activo = value; } }
-        public int Visible { get { return visible; } set { visible = value; } }
+        public bool Activo { get { return activo; } set { activo = value; } }
+        public bool Visible { get { return visible; } set { visible = value; } }
 
         public string Version { get { return "1.0.0.1"; } }
 
@@ -86,7 +86,7 @@ namespace Motor2D
 
             for (x = posX; x < posX + ancho; x++)
             {
-                for (y = posY; x < posY + alto; y++)
+                for (y = posY; y < posY + alto; y++)
                 {
                     canvas.SetPixel(x, y, Color.Blue);
                 }

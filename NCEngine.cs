@@ -58,6 +58,7 @@ namespace Motor2D
 
         public void CicloJuego()
         {
+            /*Recorre Todos los Sprites y los Manda a Dibujar*/
             foreach(NCSprite sprite in listaSprites)
             {
                 sprite.DibujarSprite();
