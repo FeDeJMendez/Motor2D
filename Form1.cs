@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -64,23 +65,67 @@ namespace Motor2D
 
         private void simularToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Solamente Inicia y Termina el Timer
             if (simularToolStripMenuItem.Checked == true)
                 timer1.Enabled = true;
             else
                 timer1.Enabled = false;
         }
 
+
         private void procesarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             /*Procesa y Coloca los Píxeles Necesarios */
+            uno.CuadroActual = 4;
+            uno.AnimacionActual = 0;
+            //uno.FlipH = true;
+            //uno.FlipV = true;
+
+            uno.FlipH = true;
+            uno.FlipV = true;
+            uno.X = -90;
+            uno.Y = -70;
+
             motor.CicloJuego();
             resultante = motor.Canvas;
             this.Invalidate();          //Redibujo de la Ventana
         }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //Actualizo Variables de Prueba
+            cx++; 
+            cy++;
+
+            //Dibujo
+            uno.Y += 3;             //En cada cuadro se actualiza el valor de X del Sprite
+            uno.X += 4;
+            //dos.Y = cy;
+            motor.CicloJuego();         //LLeva a cabo el dibujo interno
+            resultante = motor.Canvas;          //Guarda lo que dibujo el motor
+
+            //COPIAR TODO AL BUFFER
+
+            //Copia el dibujo de la ventana
+            Graphics ClientDC = this.CreateGraphics();          //ClientDC es el Device Context de la Ventana
+
+            if (resultante != null)         //Verificacion de Bitmap Iniciado OK
+            {
+                AutoScrollMinSize = new Size(anchoVentana, altoVentana);            //Cálculo de Scroll
+
+                //Copia del Bitmap Resultante al Buffer
+                ClientDC.DrawImage(resultante,
+                                    new Rectangle(this.AutoScrollPosition.X,
+                                                    this.AutoScrollPosition.Y + 30,
+                                                    anchoVentana, altoVentana));
+
+                ClientDC.DrawImage(dBufferBMP, 0, 0);           //Dibujo de Buffer a la Ventana
+            }
+        }
+
         private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("by Ivan Zurlis", "En Construccion");
+            MessageBox.Show("Ivan Zurlis", "En Construccion");
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)

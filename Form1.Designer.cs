@@ -81,7 +81,7 @@
             // procesarToolStripMenuItem
             // 
             this.procesarToolStripMenuItem.Name = "procesarToolStripMenuItem";
-            this.procesarToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.procesarToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
             this.procesarToolStripMenuItem.Text = "Procesar";
             this.procesarToolStripMenuItem.Click += new System.EventHandler(this.procesarToolStripMenuItem_Click);
             // 
@@ -89,7 +89,7 @@
             // 
             this.simularToolStripMenuItem.CheckOnClick = true;
             this.simularToolStripMenuItem.Name = "simularToolStripMenuItem";
-            this.simularToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.simularToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
             this.simularToolStripMenuItem.Text = "Simular";
             this.simularToolStripMenuItem.Click += new System.EventHandler(this.simularToolStripMenuItem_Click);
             // 
@@ -103,17 +103,20 @@
             // timer1
             // 
             this.timer1.Interval = 33;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(798, 614);
             this.Controls.Add(this.menuStrip1);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Motor2D";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
