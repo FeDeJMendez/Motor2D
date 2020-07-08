@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Motor2D
 {
+    public enum TipoAnimacion { SinAnimacion, UnaVez, Repite, PingPong };
+    public enum DirAnimacion { Normal = 1, Reversa = -1 };
+
     public class NCSprite
     {
         //Posicion Sprite
@@ -38,6 +41,23 @@ namespace Motor2D
         private bool flipHorizontal;
         private bool flipVertical;
 
+        private TipoAnimacion tAnimacion;
+        private DirAnimacion dAnimacion;
+        private int velAnimacion;
+        private int contAnimacion;
+
+        //Deltas para el avance por cuadro de animacion
+
+        private int dX;
+        private int dY;
+
+        //Copia auxiliar del fondo que se guarda en recorte para reponer en movimiento
+        private bool usarCopia;
+        private int Xc;
+        private int Yc;
+        private int recorridoXc;
+        private int recorridoYc;
+
         //Constructor
         public NCSprite(int PosX, int PosY, int Ancho, int Alto, string Imagen,
                         int Cuadros, int Animaciones, bool Activo, bool Visible)
@@ -58,6 +78,19 @@ namespace Motor2D
 
             flipHorizontal = false;
             flipVertical = false;
+
+            tAnimacion = TipoAnimacion.SinAnimacion;
+            dAnimacion = DirAnimacion.Normal;
+            velAnimacion = 2;
+            contAnimacion = 0;
+
+            dX = 0;
+            dY = 0;
+
+            usarCopia = false;
+            recorridoXc = 0;
+            recorridoYc = 0;
+            recorte = new Bitmap(ancho, alto);
         }
 
 
@@ -68,7 +101,20 @@ namespace Motor2D
         public int Ancho { get { return ancho; } }
         public int Alto { get { return alto; } }
 
-        public int CuadroActual { get { return cuadroActual; } set { cuadroActual = value; } }
+        public int CuadroActual
+        {
+            get { return cuadroActual; }
+
+            set
+            {
+                cuadroActual = value;
+                if (cuadroActual >= cuadros)
+                    cuadroActual = cuadros - 1;
+                if (cuadroActual < 0)
+                    cuadroActual = 0;
+            }
+        }
+
         public int Animaciones { get { return animaciones; } }
         public int AnimacionActual { get { return animacionActual; } set { animacionActual = value; } }
 
@@ -78,8 +124,20 @@ namespace Motor2D
         public bool FlipH { get { return flipHorizontal; } set { flipHorizontal = value; } }
         public bool FlipV { get { return flipVertical; } set { flipVertical = value; } }
 
-        public string Version { get { return "1.0.0.3"; } }
+        public TipoAnimacion TipoAnim { get { return tAnimacion; } set { tAnimacion = value; } }
+        public DirAnimacion DireccionAnim { get { return dAnimacion; } set { dAnimacion = value; } }
+        public int VelAnimacion { get { return velAnimacion; } set { velAnimacion = value; } }
 
+        public string Version { get { return "1.0.0.7"; } }
+
+        public int deltaX { get { return dX; } set { dX = value; } }
+        public int deltaY { get { return dY; } set { dY = value; } }
+
+        public void ColocarDelta(int DX, int DY)
+        {
+            dX = DX;
+            dY = DY;
+        }
 
         public void ColocarCanvas(Bitmap Canvas) 
         {
@@ -216,6 +274,142 @@ namespace Motor2D
                 resultado = control >= tope;
             }
             return resultado;
+        }
+
+        public void AvanzarAnimacion()
+        {
+            if (tAnimacion == TipoAnimacion.SinAnimacion)
+                return;
+
+            if (tAnimacion == TipoAnimacion.UnaVez)
+            {
+                if (cuadroActual >= cuadros)
+                {
+                    cuadroActual = cuadros - 1;             //La deja en el ultimo cuadro
+                    tAnimacion = TipoAnimacion.SinAnimacion;                //La frena
+                }
+                if (cuadroActual < 0)
+                {
+                    cuadroActual = 0;               //La deja en el primer cuadro
+                    tAnimacion = TipoAnimacion.SinAnimacion;                //La frena
+                }
+            }
+
+            if (tAnimacion == TipoAnimacion.PingPong)
+            {
+                if (cuadroActual >= cuadros-1)
+                    dAnimacion = DirAnimacion.Reversa;
+                if (cuadroActual == 0)
+                    dAnimacion = DirAnimacion.Normal;
+            }
+
+            if (tAnimacion == TipoAnimacion.Repite && contAnimacion >= 30 - velAnimacion)
+            {
+                if (cuadroActual >= cuadros - 1 && dAnimacion == DirAnimacion.Normal)
+                    cuadroActual = -1;
+                if (cuadroActual == 0 && dAnimacion == DirAnimacion.Reversa)
+                    cuadroActual = cuadros;
+
+            }
+
+            //Avance del cuadro de animacion
+            contAnimacion += velAnimacion;
+            if (contAnimacion >= 30)                //El programa procesa aprox. 30 img por seg.
+            {
+                cuadroActual += (int)dAnimacion;
+                contAnimacion = 0;
+
+                if (cuadroActual >= cuadros)
+                    cuadroActual = cuadros - 1;
+                if (cuadroActual < 0)
+                    cuadroActual = 0;
+            }
+        }
+
+        public void Movimiento()
+        {
+            posX += dX;
+            posY += dY;
+        }
+
+        public void CopiarFondo()
+        {
+            //Bloque auxiliar para guardar el fondo
+            Color colorImagen = new Color();
+            int xr = 0;
+            int yr = 0;
+
+            //Limites del bloque
+            int x = posX;
+            int y = posY;
+            int limX = posX + ancho;
+            int limY = posY + alto;
+
+            //Si hay Culing no realiza la copia y sale
+            if ((posY + alto < 0) || posY >= canvas.Height || (posX + ancho < 0) || posX >= canvas.Width)
+            {
+                usarCopia = false;
+                return;
+            }
+            else
+                usarCopia = true;
+
+            //Recortes en los Clipping
+            if (posX < 0)               //Izquierda
+            {
+                x = 0;
+                limX = ancho + posX;
+            }
+            else if (posX + ancho >= canvas.Width)              //Derecha
+                limX = canvas.Width;
+
+            if (posY < 0)               //Arriba
+            {
+                y = 0;
+                limY = alto + posY;
+            }
+            else if (posY + alto >= canvas.Height)              //Abajo
+                limY = canvas.Height;
+
+            //Tamaño
+            recorridoXc = limX - x;
+            recorridoYc = limY - y;
+
+            //Copia de la porcion de fondo
+            Xc = x;
+            Yc = y;
+            int reinicioY = y;
+
+            for (x = x, xr = 0; x < limX; x++, xr++)
+            {
+                for (y = reinicioY, yr = 0; y < limY; y++, yr++)
+                {
+                    colorImagen = canvas.GetPixel(x, y);
+                    recorte.SetPixel(xr, yr, colorImagen);
+                }
+            }
+        }
+
+        public void PintarFondo()
+        {
+            if (usarCopia == false)
+                return;
+
+            Color colorImagen = new Color();
+            int xr = 0;
+            int yr = 0;
+            int x = Xc;
+            int y = Yc;
+
+            //Volvemos la porcion al Canvas
+            for (xr = 0; xr < recorridoXc; xr++)
+            {
+                for(yr = 0; yr < recorridoYc; yr++)
+                {
+                    colorImagen = recorte.GetPixel(xr, yr);
+                    canvas.SetPixel(x + xr, y + yr, colorImagen);
+                }
+            }
         }
     }
 }

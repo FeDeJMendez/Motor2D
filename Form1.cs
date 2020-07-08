@@ -29,8 +29,8 @@ namespace Motor2D
         private int cx = 100, cy = 0;         //Variables para Prueba
 
         //Creo dos Sprites (Coordenadas, Dimensiones, NombreArchivo, CantidadCuadrosyAnimaciones, Visible, Procesando)
-        private NCSprite uno = new NCSprite(100, 100, 80, 60, "Sprite0.png", 0, 0, true, true);
-        private NCSprite dos = new NCSprite(250, 200, 80, 60, "Sprite0.png", 0, 0, true, true);
+        private NCSprite uno = new NCSprite(100, 100, 80, 60, "Sprite0.png", 5, 4, true, true);
+        private NCSprite dos = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true);
 
 
         public Form1()
@@ -56,6 +56,7 @@ namespace Motor2D
 
             motor.AgregarSprite(uno);
             motor.AgregarSprite(dos);
+            motor.InicializarEngine();
         }
 
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -75,16 +76,26 @@ namespace Motor2D
 
         private void procesarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /*Procesa y Coloca los Píxeles Necesarios */
-            uno.CuadroActual = 4;
+            //Procesa y Coloca los Píxeles Necesarios
+            uno.CuadroActual = 0;
             uno.AnimacionActual = 0;
+
             //uno.FlipH = true;
             //uno.FlipV = true;
+            uno.X = -100;
+            uno.Y = 100;
+            uno.CuadroActual = 3;
+            uno.VelAnimacion = 2;
+            uno.DireccionAnim = DirAnimacion.Normal;
+            uno.TipoAnim = TipoAnimacion.PingPong;
+            //uno.ColocarDelta(5, 3);
+            uno.deltaX = 2;
+            uno.deltaY = 0;
 
-            uno.FlipH = true;
-            uno.FlipV = true;
-            uno.X = -90;
-            uno.Y = -70;
+            dos.X = 100;
+            dos.Y = -100;
+            dos.AnimacionActual = 2;
+            dos.deltaY = 2;
 
             motor.CicloJuego();
             resultante = motor.Canvas;
@@ -98,8 +109,8 @@ namespace Motor2D
             cy++;
 
             //Dibujo
-            uno.Y += 3;             //En cada cuadro se actualiza el valor de X del Sprite
-            uno.X += 4;
+            //uno.Y += 3;             //En cada cuadro se actualiza el valor de X del Sprite
+            //uno.X += 4;
             //dos.Y = cy;
             motor.CicloJuego();         //LLeva a cabo el dibujo interno
             resultante = motor.Canvas;          //Guarda lo que dibujo el motor
