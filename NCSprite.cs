@@ -14,32 +14,32 @@ namespace Motor2D
     public class NCSprite
     {
         //Posicion Sprite
-        private int posX;
-        private int posY;
+        protected int posX;
+        protected int posY;
 
         //Tamaño Sprite
-        private int ancho;
-        private int alto;
+        protected int ancho;
+        protected int alto;
 
         //Imagen de Sprites
-        private Bitmap imagen;
+        protected Bitmap imagen;
 
         //Info de Animación
         private int cuadros;                //Cantidad de cuadros de Animación
-        private int cuadroActual;           //Animación que se está mostrando
+        protected int cuadroActual;           //Animación que se está mostrando
         private int animaciones;            //Cantidad de animaciones del Sprite
-        private int animacionActual;        //Animación que se esta mostrando
+        protected int animacionActual;        //Animación que se esta mostrando
 
         private bool activo;                //Check Sprite hace ciclo de animación
         private bool visible;               //Check Sprite se dibuja
 
         //Dibujo del sprite
-        private Bitmap canvas;              //Donde se dibuja el sprite
+        protected Bitmap canvas;              //Donde se dibuja el sprite
         private Bitmap recorte;             //Recorte del fondo para reponer
 
         //Efecto espejo Flip
-        private bool flipHorizontal;
-        private bool flipVertical;
+        protected bool flipHorizontal;
+        protected bool flipVertical;
 
         private TipoAnimacion tAnimacion;
         private DirAnimacion dAnimacion;
@@ -47,7 +47,6 @@ namespace Motor2D
         private int contAnimacion;
 
         //Deltas para el avance por cuadro de animacion
-
         private int dX;
         private int dY;
 
@@ -57,6 +56,13 @@ namespace Motor2D
         private int Yc;
         private int recorridoXc;
         private int recorridoYc;
+
+        //Para colisiones
+        private bool colisionable;
+        private bool colisionado;
+        private int xan;
+        private int yal;
+        private int radioC;             //Radio al cuadrado para evitar la raiz
 
         //Constructor
         public NCSprite(int PosX, int PosY, int Ancho, int Alto, string Imagen,
@@ -91,6 +97,14 @@ namespace Motor2D
             recorridoXc = 0;
             recorridoYc = 0;
             recorte = new Bitmap(ancho, alto);
+
+            colisionable = false;
+            colisionado = false;
+
+            xan = posX + ancho;
+            yal = posY + alto;
+
+            radioC = (ancho / 2) * (ancho / 2) + (alto / 2) * (alto / 2);
         }
 
 
@@ -128,10 +142,18 @@ namespace Motor2D
         public DirAnimacion DireccionAnim { get { return dAnimacion; } set { dAnimacion = value; } }
         public int VelAnimacion { get { return velAnimacion; } set { velAnimacion = value; } }
 
-        public string Version { get { return "1.0.0.7"; } }
+        public string Version { get { return "1.0.1.0"; } }
 
         public int deltaX { get { return dX; } set { dX = value; } }
         public int deltaY { get { return dY; } set { dY = value; } }
+
+        public bool Colisionable { get { return colisionable; } set { colisionable = value; } }
+        public bool Colisionado { get { return colisionado; } set { colisionado = value; } }
+
+        public int Xan { get { return xan; } }
+        public int Yal { get { return yal; } }
+
+        public int RadioC { get { return radioC; } set { radioC = value; } }
 
         public void ColocarDelta(int DX, int DY)
         {
@@ -149,7 +171,7 @@ namespace Motor2D
             imagen = Imagen;
         }
 
-        public void DibujarSprite()
+        public virtual void DibujarSprite()
         {
             Color colorImagen = new Color();                //Color de un pixel obtenido de la imagen
 
@@ -262,7 +284,7 @@ namespace Motor2D
             }            
         }
 
-        private bool evaluarSegunDireccion(int control, int tope, bool flip)
+        protected bool evaluarSegunDireccion(int control, int tope, bool flip)
         {
             bool resultado = false;
             if (flip == false)
@@ -330,6 +352,12 @@ namespace Motor2D
         {
             posX += dX;
             posY += dY;
+
+            if (colisionable)
+            {
+                xan = posX + ancho;
+                yal = posY + alto;
+            }
         }
 
         public void CopiarFondo()

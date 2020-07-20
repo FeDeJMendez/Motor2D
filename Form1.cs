@@ -29,8 +29,9 @@ namespace Motor2D
         private int cx = 100, cy = 0;         //Variables para Prueba
 
         //Creo dos Sprites (Coordenadas, Dimensiones, NombreArchivo, CantidadCuadrosyAnimaciones, Visible, Procesando)
-        private NCSprite uno = new NCSprite(100, 100, 80, 60, "Sprite0.png", 5, 4, true, true);
+        private NCSpriteT uno = new NCSpriteT(100, 100, 80, 60, "Sprite0.png", 5, 4, true, true, Color.FromArgb(0,0,255));
         private NCSprite dos = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true);
+        private NCSprite tres = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true);
 
 
         public Form1()
@@ -52,9 +53,10 @@ namespace Motor2D
             this.Text += " " + uno.Version.ToString();
 
             //Instancia del Motor que Administra los Sprites
-            motor = new NCEngine(anchoVentana, altoVentana);
+            motor = new NCEngine(anchoVentana, altoVentana, TiposColisiones.BoundingCircle);
 
             motor.AgregarSprite(uno);
+            motor.AgregarSprite(tres);
             motor.AgregarSprite(dos);
             motor.InicializarEngine();
         }
@@ -82,20 +84,27 @@ namespace Motor2D
 
             //uno.FlipH = true;
             //uno.FlipV = true;
-            uno.X = -100;
+            uno.X = 100;
             uno.Y = 100;
             uno.CuadroActual = 3;
             uno.VelAnimacion = 2;
             uno.DireccionAnim = DirAnimacion.Normal;
             uno.TipoAnim = TipoAnimacion.PingPong;
             //uno.ColocarDelta(5, 3);
-            uno.deltaX = 2;
+            uno.deltaX = 1;
             uno.deltaY = 0;
+            uno.Colisionable = true;
 
-            dos.X = 100;
-            dos.Y = -100;
+            dos.X = 400;
+            dos.Y = 120;
             dos.AnimacionActual = 2;
-            dos.deltaY = 2;
+            dos.Colisionable = true;
+            //dos.deltaY = 2;
+
+            tres.X = 300;
+            tres.Y = 90;
+            tres.AnimacionActual = 3;
+            tres.Colisionable = false;
 
             motor.CicloJuego();
             resultante = motor.Canvas;
