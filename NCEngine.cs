@@ -148,7 +148,7 @@ namespace Motor2D
             {
                 if (listaSprites[n].Colisionable == true)
                 {
-                    Console.WriteLine("Sprite {0} es Colisionable", n);
+                    //Console.WriteLine("Sprite {0} es Colisionable", n);
                     for (m = n + 1; m < listaSprites.Count; m++)
                     {
                         if (listaSprites[m].Colisionable == true)
@@ -176,8 +176,10 @@ namespace Motor2D
                             {
                                 listaSprites[n].Colisionado = true;
                                 listaSprites[m].Colisionado = true;
-                                Console.WriteLine("{0} contra {1}",n ,m);
+                                //Console.WriteLine("{0} contra {1}",n ,m);
                             }
+                            else
+                                listaSprites[n].Colisionado = false;
                         }
                     }
                 }

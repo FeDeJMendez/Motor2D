@@ -11,6 +11,8 @@ namespace Motor2D
     public enum TipoAnimacion { SinAnimacion, UnaVez, Repite, PingPong };
     public enum DirAnimacion { Normal = 1, Reversa = -1 };
 
+    public delegate void DColision(int ID);             //Delegado para colisiones
+
     public class NCSprite
     {
         //Posicion Sprite
@@ -63,10 +65,14 @@ namespace Motor2D
         private int xan;
         private int yal;
         private int radioC;             //Radio al cuadrado para evitar la raiz
+        private int id;             //ID de sprite
+        private DColision delInicioColision;
+        private DColision delEnColision;
+        private DColision delFinColision;
 
         //Constructor
         public NCSprite(int PosX, int PosY, int Ancho, int Alto, string Imagen,
-                        int Cuadros, int Animaciones, bool Activo, bool Visible)
+                        int Cuadros, int Animaciones, bool Activo, bool Visible, int ID)
         {
             posX = PosX;
             posY = PosY; ;
@@ -76,6 +82,7 @@ namespace Motor2D
             animaciones = Animaciones;
             activo = Activo;
             visible = Visible;
+            id = ID;
 
             animacionActual = 0;
             cuadroActual = 0;
@@ -148,12 +155,29 @@ namespace Motor2D
         public int deltaY { get { return dY; } set { dY = value; } }
 
         public bool Colisionable { get { return colisionable; } set { colisionable = value; } }
-        public bool Colisionado { get { return colisionado; } set { colisionado = value; } }
+        public bool Colisionado { get { return colisionado; }
+            set
+            {
+                if (value == true && colisionado == false)
+                    if (delInicioColision != null)
+                        delInicioColision(id);
+                //if (value == true && colisionado == true)
+                //    if (delEnColision != null)
+                //        delEnColision(id);
+                //if (value == false && colisionado == true)
+                //    if (delFinColision != null)
+                //        delFinColision(id);
+
+                colisionado = value;
+            }
+        }
 
         public int Xan { get { return xan; } }
         public int Yal { get { return yal; } }
 
         public int RadioC { get { return radioC; } set { radioC = value; } }
+
+        public int ID { get { return id; } set { id = value; } }
 
         public void ColocarDelta(int DX, int DY)
         {
@@ -161,15 +185,47 @@ namespace Motor2D
             dY = DY;
         }
 
-        public void ColocarCanvas(Bitmap Canvas) 
+        public void ColocarCanvas(Bitmap Canvas)
         {
             canvas = Canvas;
         }
 
-        public void ColocarImagen (Bitmap Imagen)
+        public void ColocarImagen(Bitmap Imagen)
         {
             imagen = Imagen;
         }
+
+        //Manejo de metodos del delegado de colision
+        public void AgregarInicioColision(DColision Metodo)
+        {
+            delInicioColision += Metodo;
+        }
+
+        public void EliminarInicioColision(DColision Metodo)
+        {
+            delInicioColision -= Metodo;
+        }
+
+        public void AgregarEnColosion(DColision Metodo)
+        {
+            delEnColision += Metodo;
+        }
+
+        public void EliminarEnColision(DColision Metodo)
+        {
+            delEnColision -= Metodo;
+        }
+
+        public void AgregarFinColision(DColision Metodo)
+        {
+            delFinColision += Metodo;
+        }
+
+        public void EliminarFinColision(DColision Metodo)
+        {
+            delFinColision -= Metodo;
+        }
+
 
         public virtual void DibujarSprite()
         {

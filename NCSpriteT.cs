@@ -12,8 +12,8 @@ namespace Motor2D
         private Color colorT;               //Color de Transparencia
 
         public NCSpriteT (int PosX, int PosY, int Ancho, int Alto, string Imagen,
-                        int Cuadros, int Animaciones, bool Activo, bool Visible, Color ColorT)
-            :base(PosX, PosY, Ancho, Alto, Imagen, Cuadros, Animaciones, Activo, Visible)
+                        int Cuadros, int Animaciones, bool Activo, bool Visible, int ID, Color ColorT)
+            :base(PosX, PosY, Ancho, Alto, Imagen, Cuadros, Animaciones, Activo, Visible, ID)
         {
             colorT = ColorT;
         }
@@ -118,7 +118,6 @@ namespace Motor2D
                     finalY += (y + alto) - canvas.Height;
                 }
             }
-
 
             //Recorre la imagen, copia cada pixel y lo coloca en el Canvas
             for (xRecorrido = inicioX; evaluarSegunDireccion(xRecorrido, finalX, flipHorizontal); xRecorrido += avanceX, x++)

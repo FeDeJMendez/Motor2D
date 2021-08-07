@@ -29,9 +29,9 @@ namespace Motor2D
         private int cx = 100, cy = 0;         //Variables para Prueba
 
         //Creo dos Sprites (Coordenadas, Dimensiones, NombreArchivo, CantidadCuadrosyAnimaciones, Visible, Procesando)
-        private NCSpriteT uno = new NCSpriteT(100, 100, 80, 60, "Sprite0.png", 5, 4, true, true, Color.FromArgb(0,0,255));
-        private NCSprite dos = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true);
-        private NCSprite tres = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true);
+        private NCSpriteT uno = new NCSpriteT(100, 100, 80, 60, "Sprite0.png", 5, 4, true, true, 1, Color.FromArgb(0,0,255));
+        private NCSprite dos = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true, 2);
+        private NCSprite tres = new NCSprite(250, 200, 80, 60, "Sprite0.png", 5, 4, true, true, 3);
 
 
         public Form1()
